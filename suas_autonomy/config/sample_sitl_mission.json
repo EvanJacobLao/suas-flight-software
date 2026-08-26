@@ -1,0 +1,13 @@
+{
+  "name": "ArduPlane SITL autonomous circuit and landing",
+  "runway_heading_deg": 353,
+  "points": [
+    {"command": "TAKEOFF", "north_m": 0, "east_m": 0, "altitude_m": 60},
+    {"command": "WAYPOINT", "north_m": 350, "east_m": -40, "altitude_m": 60},
+    {"command": "WAYPOINT", "north_m": 350, "east_m": 260, "altitude_m": 60},
+    {"command": "WAYPOINT", "north_m": 0, "east_m": 260, "altitude_m": 60},
+    {"command": "WAYPOINT", "north_m": -350, "east_m": 40, "altitude_m": 60},
+    {"command": "WAYPOINT", "north_m": -180, "east_m": 20, "altitude_m": 46},
+    {"command": "LAND", "north_m": 0, "east_m": 0, "altitude_m": 0}
+  ]
+}

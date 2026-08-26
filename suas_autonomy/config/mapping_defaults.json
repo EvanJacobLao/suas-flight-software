@@ -1,0 +1,21 @@
+{
+  "camera": {
+    "model": "SIYI A8 Mini",
+    "horizontal_fov_deg": 81.0,
+    "resolution": "4096x2160",
+    "calibration_file": null,
+    "stream_latency_ms": null,
+    "mapping_gimbal_pitch_deg": -90.0
+  },
+  "mapping": {
+    "altitude_m": 60.0,
+    "groundspeed_m_s": 18.0,
+    "forward_overlap": 0.75,
+    "side_overlap": 0.65,
+    "survey_heading_deg": 0.0
+  },
+  "sources": {
+    "camera": "synthetic",
+    "telemetry": "synthetic"
+  }
+}
