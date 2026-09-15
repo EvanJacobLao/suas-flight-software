@@ -1,0 +1,5 @@
+# Runtime dependencies. Keep this file for simple Jetson/laptop setup; the
+# authoritative constraints are mirrored in pyproject.toml.
+numpy>=2.0,<3
+opencv-python-headless>=4.10,<5
+pymavlink>=2.4.42,<3

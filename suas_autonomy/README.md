@@ -172,12 +172,46 @@ The benchmark measures synthetic 720p, 1080p, and 4K image-quality analysis,
 JPEG encoding, and ORB feature detection. It intentionally does not claim to
 measure SIYI decoding, CUDA, TensorRT, or YOLO.
 
+## 9. Hardware-free competition development
+
+Exercise live capture with a laptop webcam and synthetic telemetry:
+
+```bash
+python3 -m suas_autonomy.capture_pipeline --camera webcam --camera-index 0 \
+  --frames 10 --output output/webcam_captures
+```
+
+Generate a scene with exact target/GPS ground truth and score the test detector:
+
+```bash
+python3 -m suas_autonomy.vision.synthetic_targets --targets 4 \
+  --output output/vision/synthetic_scene.jpg
+```
+
+Serve a local synthetic GCS at `http://127.0.0.1:8080`, or replay a CSV
+produced by the SITL mission monitor:
+
+```bash
+python3 -m suas_autonomy.gcs.dashboard
+python3 -m suas_autonomy.gcs.dashboard --replay logs/sitl_mission_TIMESTAMP.csv
+```
+
+`suas_autonomy.mission.competition_state` provides testable precheck,
+takeoff, mandatory waypoint-lap, mapping/search, drop, landing, and abort-to-RTL
+sequencing. The synthetic vision detector is a test oracle for pipeline and
+localization plumbing, not the eventual competition ML model.
+
 ## Tests
 
 Run all tests from the repository root in an environment containing OpenCV,
 NumPy, and pymavlink:
 
 ```bash
-python3 -m unittest discover -s suas_autonomy/tests -p "test_*.py"
+python -m venv .venv
+.venv/Scripts/python -m pip install -e ".[dev]"  # Windows
+# .venv/bin/python -m pip install -e ".[dev]"    # Linux
 ```
 
+```bash
+python3 -m unittest discover -s suas_autonomy/tests -p "test_*.py"
+```

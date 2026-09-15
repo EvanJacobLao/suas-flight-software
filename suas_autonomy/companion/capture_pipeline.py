@@ -125,6 +125,40 @@ class VideoFileCamera:
         self.capture.release()
 
 
+class WebcamCamera:
+    """OpenCV webcam source used for hardware-free live pipeline testing."""
+
+    def __init__(self, device_index: int = 0, width: int | None = None, height: int | None = None):
+        if device_index < 0:
+            raise ValueError("webcam device index cannot be negative")
+        self.capture = cv2.VideoCapture(device_index)
+        if not self.capture.isOpened():
+            self.capture.release()
+            raise RuntimeError(f"cannot open webcam device {device_index}")
+        if width is not None:
+            self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        if height is not None:
+            self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+        self.device_index = device_index
+        self.sequence = 0
+
+    def read(self) -> FramePacket | None:
+        success, frame = self.capture.read()
+        if not success:
+            return None
+        packet = FramePacket(
+            image=frame,
+            monotonic_time=time.monotonic(),
+            source_sequence=self.sequence,
+            source=f"webcam:{self.device_index}",
+        )
+        self.sequence += 1
+        return packet
+
+    def close(self) -> None:
+        self.capture.release()
+
+
 class SyntheticTelemetry:
     def __init__(self, origin_lat: float = -35.363262, origin_lon: float = 149.165237):
         self.origin_lat = origin_lat
@@ -305,8 +339,9 @@ def parse_resolution(value: str) -> tuple[int, int]:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--camera", choices=["synthetic", "video"], default="synthetic")
+    parser.add_argument("--camera", choices=["synthetic", "video", "webcam"], default="synthetic")
     parser.add_argument("--video", type=Path, help="required when --camera video")
+    parser.add_argument("--camera-index", type=int, default=0, help="OpenCV device index for --camera webcam")
     parser.add_argument("--telemetry", choices=["synthetic", "mavlink"], default="synthetic")
     parser.add_argument("--mavlink", default="tcp:127.0.0.1:5762")
     parser.add_argument("--resolution", type=parse_resolution, default=(1280, 720))
@@ -323,10 +358,12 @@ def main() -> int:
 
     if args.camera == "synthetic":
         camera: FrameSource = SyntheticCamera(*args.resolution)
-    else:
+    elif args.camera == "video":
         if args.video is None:
             raise SystemExit("--video is required with --camera video")
         camera = VideoFileCamera(args.video)
+    else:
+        camera = WebcamCamera(args.camera_index, *args.resolution)
 
     telemetry: TelemetrySource
     if args.telemetry == "synthetic":

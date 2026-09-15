@@ -2,12 +2,14 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 import numpy as np
 
 from suas_autonomy.companion.capture_pipeline import (
     SyntheticCamera,
     SyntheticTelemetry,
+    WebcamCamera,
     image_quality,
     run_pipeline,
 )
@@ -15,6 +17,22 @@ from suas_autonomy.companion.orin_diagnostics import check_memory, check_storage
 
 
 class CapturePipelineTests(unittest.TestCase):
+    def test_webcam_source_uses_requested_device_and_releases_it(self):
+        fake_frame = np.zeros((48, 64, 3), dtype=np.uint8)
+        with patch("suas_autonomy.companion.capture_pipeline.cv2.VideoCapture") as constructor:
+            capture = constructor.return_value
+            capture.isOpened.return_value = True
+            capture.read.return_value = (True, fake_frame)
+            capture.getBackendName.return_value = "mock"
+            camera = WebcamCamera(2, 640, 480)
+            packet = camera.read()
+            camera.close()
+
+        constructor.assert_called_once_with(2)
+        self.assertEqual(packet.source, "webcam:2")
+        self.assertEqual(packet.image.shape, (48, 64, 3))
+        capture.release.assert_called_once()
+
     def test_quality_rejects_blank_dark_frame(self):
         frame = np.zeros((100, 100, 3), dtype=np.uint8)
         result = image_quality(frame)

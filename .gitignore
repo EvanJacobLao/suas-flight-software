@@ -1,4 +1,5 @@
 .venv/
+.test-venv/
 .vscode/
 __pycache__/
 *.py[cod]
@@ -8,3 +9,15 @@ Drone_Screenshots/
 tempCodeRunnerFile.py
 Pysimverse/
 drone_template/
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+output/
+tmp/
+.env
+.env.*
+!.env.example
+# Local troubleshooting notes and vendor reference document
+JETSON_SETUP_HANDOVER.md
+/AIR6N0-C-MB NX (M_V15S)_F1.20.pdf
