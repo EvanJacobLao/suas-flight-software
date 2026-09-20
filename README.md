@@ -5,6 +5,7 @@ SITL mission planning, companion-camera capture, mapping, and synthetic vision.
 
 - [Autonomy tools and usage](suas_autonomy/README.md)
 - [Manual control tools](manual_control/README.md)
+- [Jetson manual-flight telemetry monitor](manual_control/FLIGHT_MONITOR.md) — RC-piloted FBWA, wireless laptop display, onboard logs, and hardware-free demo.
 
 ## Development setup
 
