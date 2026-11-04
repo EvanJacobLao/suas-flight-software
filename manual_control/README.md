@@ -21,11 +21,18 @@ Install the Python dependencies:
 
 ```bash
 pip install -r requirements.txt
+```
 
-Running
+## Running
+
 Start ArduPlane SITL and then run:
+
+```bash
 python mappingPlaneController.py
-Controls
+```
+
+## Controls
+
 - Left stick Y: throttle
 - Left stick X: rudder
 - Right stick X: aileron
